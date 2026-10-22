@@ -1,0 +1,342 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#090d18">
+  <title>QuickKit — Tools for Everyday</title>
+  <style>
+    :root {
+      --bg: #090d18;
+      --panel: #111827;
+      --border: #263247;
+      --text: #f1f5f9;
+      --muted: #94a3b8;
+      --blue: #60a5fa;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: Inter, system-ui, Arial, sans-serif;
+      min-height: 100vh;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 22px max(6%, calc((100% - 1100px) / 2));
+      border-bottom: 1px solid var(--border);
+    }
+
+    .logo { font-size: 23px; font-weight: 800; letter-spacing: -1px; }
+    .logo span { color: var(--blue); }
+
+    .status {
+      font-size: 12px;
+      color: #86efac;
+      background: #123023;
+      padding: 8px 12px;
+      border-radius: 20px;
+    }
+
+    main {
+      max-width: 1100px;
+      margin: auto;
+      padding: 60px 22px;
+    }
+
+    .hero { margin-bottom: 38px; }
+    .eyebrow {
+      color: var(--blue);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      font-size: clamp(38px, 6vw, 60px);
+      line-height: 1.08;
+      letter-spacing: -2px;
+      margin: 15px 0;
+    }
+
+    h1 span { color: var(--blue); }
+    .hero p { color: var(--muted); line-height: 1.7; }
+
+    .tools {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 18px;
+    }
+
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 15px;
+      padding: 23px;
+    }
+
+    .card h2 { font-size: 18px; margin: 0 0 8px; }
+    .card p { color: var(--muted); font-size: 13px; line-height: 1.6; }
+
+    input, select, button {
+      font: inherit;
+      border-radius: 8px;
+      padding: 11px 12px;
+      width: 100%;
+      margin-top: 10px;
+    }
+
+    input, select {
+      color: var(--text);
+      background: #0a1020;
+      border: 1px solid var(--border);
+      outline: none;
+    }
+
+    input:focus, select:focus { border-color: var(--blue); }
+
+    button {
+      color: #07111f;
+      background: var(--blue);
+      border: 0;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    button:hover { filter: brightness(1.1); }
+
+    .result {
+      min-height: 24px;
+      margin-top: 16px;
+      color: var(--blue);
+      font-weight: 600;
+      overflow-wrap: anywhere;
+    }
+
+    .wide { grid-column: 1 / -1; }
+    .timer {
+      font-size: 36px;
+      font-weight: 750;
+      letter-spacing: 2px;
+      margin: 20px 0;
+      font-variant-numeric: tabular-nums;
+    }
+
+    footer {
+      max-width: 1100px;
+      margin: 20px auto 0;
+      padding: 25px 22px 35px;
+      border-top: 1px solid var(--border);
+      color: var(--muted);
+      font-size: 13px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      justify-content: space-between;
+    }
+
+    a { color: var(--blue); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    @media (max-width: 500px) {
+      main { padding-top: 40px; }
+      header { padding: 18px; }
+      .wide { grid-column: auto; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo">Quick<span>Kit</span></div>
+    <div class="status" id="siteStatus">● Operational</div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="eyebrow">Your everyday toolkit</div>
+      <h1>Small tools.<br><span>Big convenience.</span></h1>
+      <p>Simple, free tools that get things done. No downloads, no unnecessary complications.</p>
+    </section>
+
+    <section class="tools">
+      <article class="card">
+        <h2>Basic Calculator</h2>
+        <p>Perform a quick calculation.</p>
+        <input id="calcA" type="number" placeholder="First number">
+        <select id="operator" aria-label="Operation">
+          <option value="+">Add (+)</option>
+          <option value="-">Subtract (−)</option>
+          <option value="*">Multiply (×)</option>
+          <option value="/">Divide (÷)</option>
+        </select>
+        <input id="calcB" type="number" placeholder="Second number">
+        <button onclick="calculate()">Calculate</button>
+        <div class="result" id="calcResult" aria-live="polite"></div>
+      </article>
+
+      <article class="card">
+        <h2>Random Number</h2>
+        <p>Generate a random whole number within your chosen range.</p>
+        <input id="minNum" type="number" value="1" placeholder="Minimum">
+        <input id="maxNum" type="number" value="100" placeholder="Maximum">
+        <button onclick="randomNumber()">Generate number</button>
+        <div class="result" id="randomResult" aria-live="polite"></div>
+      </article>
+
+      <article class="card">
+        <h2>Countdown Timer</h2>
+        <p>Set a timer for a task, break, or study session.</p>
+        <input id="minutes" type="number" min="1" max="1440" value="5" placeholder="Minutes">
+        <div class="timer" id="timerDisplay">05:00</div>
+        <button id="timerButton" onclick="toggleTimer()">Start timer</button>
+        <button onclick="resetTimer()" style="background:#263247;color:#f1f5f9">Reset</button>
+        <div class="result" id="timerResult" aria-live="polite"></div>
+      </article>
+
+      <article class="card">
+        <h2>Quick Notes</h2>
+        <p>Write a note. It stays in this browser on this device.</p>
+        <textarea id="notes" rows="4" placeholder="Type your note here..."
+          style="width:100%;margin-top:10px;padding:12px;border-radius:8px;background:#0a1020;border:1px solid #263247;color:#f1f5f9;font:inherit"></textarea>
+        <button onclick="saveNote()">Save note</button>
+        <div class="result" id="noteResult" aria-live="polite"></div>
+      </article>
+    </section>
+  </main>
+
+  <footer>
+    <span>© <span id="year"></span> QuickKit</span>
+    <span>Simple tools for everyday use.</span>
+    <span>Service status: <a id="statusLink" href="#" target="_blank" rel="noopener noreferrer">Check uptime</a></span>
+  </footer>
+
+  <script>
+    document.getElementById("year").textContent = new Date().getFullYear();
+
+    // Replace this with your real public UptimeRobot status-page URL.
+    const STATUS_PAGE_URL = "";
+    if (STATUS_PAGE_URL) {
+      document.getElementById("statusLink").href = STATUS_PAGE_URL;
+    } else {
+      document.getElementById("statusLink").addEventListener("click", e => {
+        e.preventDefault();
+        alert("The public status page has not been configured yet.");
+      });
+    }
+
+    function calculate() {
+      const a = Number(document.getElementById("calcA").value);
+      const b = Number(document.getElementById("calcB").value);
+      const op = document.getElementById("operator").value;
+      const result = document.getElementById("calcResult");
+
+      if (document.getElementById("calcA").value === "" ||
+          document.getElementById("calcB").value === "") {
+        result.textContent = "Enter both numbers.";
+        return;
+      }
+      if (op === "/" && b === 0) {
+        result.textContent = "Cannot divide by zero.";
+        return;
+      }
+
+      const value = op === "+" ? a + b :
+                    op === "-" ? a - b :
+                    op === "*" ? a * b : a / b;
+      result.textContent = "Result: " + value;
+    }
+
+    function randomNumber() {
+      const min = Number(document.getElementById("minNum").value);
+      const max = Number(document.getElementById("maxNum").value);
+      const result = document.getElementById("randomResult");
+
+      if (!Number.isSafeInteger(min) || !Number.isSafeInteger(max) || min > max) {
+        result.textContent = "Enter valid whole numbers; minimum must not exceed maximum.";
+        return;
+      }
+      if (!Number.isSafeInteger(max - min)) {
+        result.textContent = "That range is too large.";
+        return;
+      }
+      result.textContent = "Your number: " + (min + Math.floor(Math.random() * (max - min + 1)));
+    }
+
+    let remaining = 300;
+    let interval = null;
+
+    function renderTimer() {
+      const m = Math.floor(remaining / 60);
+      const s = remaining % 60;
+      document.getElementById("timerDisplay").textContent =
+        String(m).padStart(2, "0") + ":" + String(s).padStart(2, "0");
+    }
+
+    function toggleTimer() {
+      if (interval !== null) {
+        clearInterval(interval);
+        interval = null;
+        document.getElementById("timerButton").textContent = "Resume timer";
+        return;
+      }
+
+      if (remaining <= 0) {
+        const minutes = Number(document.getElementById("minutes").value);
+        if (!Number.isInteger(minutes) || minutes < 1 || minutes > 1440) {
+          document.getElementById("timerResult").textContent = "Choose 1–1440 minutes.";
+          return;
+        }
+        remaining = minutes * 60;
+      }
+
+      document.getElementById("timerResult").textContent = "";
+      document.getElementById("timerButton").textContent = "Pause timer";
+      interval = setInterval(() => {
+        remaining--;
+        renderTimer();
+        if (remaining <= 0) {
+          clearInterval(interval);
+          interval = null;
+          document.getElementById("timerButton").textContent = "Start again";
+          document.getElementById("timerResult").textContent = "Timer finished.";
+        }
+      }, 1000);
+    }
+
+    function resetTimer() {
+      clearInterval(interval);
+      interval = null;
+      const minutes = Number(document.getElementById("minutes").value);
+      remaining = Number.isInteger(minutes) && minutes >= 1 && minutes <= 1440
+        ? minutes * 60 : 300;
+      renderTimer();
+      document.getElementById("timerButton").textContent = "Start timer";
+      document.getElementById("timerResult").textContent = "";
+    }
+
+    document.getElementById("minutes").addEventListener("change", resetTimer);
+    renderTimer();
+
+    function saveNote() {
+      try {
+        localStorage.setItem("quickkit-note", document.getElementById("notes").value);
+        document.getElementById("noteResult").textContent = "Note saved on this device.";
+      } catch {
+        document.getElementById("noteResult").textContent = "Unable to save in this browser.";
+      }
+    }
+
+    try {
+      document.getElementById("notes").value = localStorage.getItem("quickkit-note") || "";
+    } catch {}
+  </script>
+</body>
+</html>
